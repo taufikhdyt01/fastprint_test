@@ -1,71 +1,173 @@
-###################
-What is CodeIgniter
-###################
+############################
+FastPrint Product Management
+############################
 
-CodeIgniter is an Application Development Framework - a toolkit - for people
-who build web sites using PHP. Its goal is to enable you to develop projects
-much faster than you could if you were writing code from scratch, by providing
-a rich set of libraries for commonly needed tasks, as well as a simple
-interface and logical structure to access these libraries. CodeIgniter lets
-you creatively focus on your project by minimizing the amount of code needed
-for a given task.
+Sistem manajemen produk untuk FastPrint menggunakan CodeIgniter 3.
 
 *******************
-Release Information
+Teknologi Digunakan
 *******************
 
-This repo contains in-development code for future releases. To download the
-latest stable release please visit the `CodeIgniter Downloads
-<https://codeigniter.com/download>`_ page.
-
-**************************
-Changelog and New Features
-**************************
-
-You can find a list of all changes for each release in the `user
-guide change log <https://github.com/bcit-ci/CodeIgniter/blob/develop/user_guide_src/source/changelog.rst>`_.
-
-*******************
-Server Requirements
-*******************
-
-PHP version 5.6 or newer is recommended.
-
-It should work on 5.3.7 as well, but we strongly advise you NOT to run
-such old versions of PHP, because of potential security and performance
-issues, as well as missing features.
+* PHP 7.4+
+* CodeIgniter 3
+* MySQL Database
+* Bootstrap 5
+* DataTables
+* Select2
+* Font Awesome
 
 ************
-Installation
+Requirements
 ************
 
-Please see the `installation section <https://codeigniter.com/userguide3/installation/index.html>`_
-of the CodeIgniter User Guide.
+* PHP 7.4 atau lebih tinggi
+* MySQL
+* Web Server (Apache/Nginx)
 
-*******
-License
-*******
+**********
+Instalasi
+**********
 
-Please see the `license
-agreement <https://github.com/bcit-ci/CodeIgniter/blob/develop/user_guide_src/source/license.rst>`_.
+1. Clone repository::
 
-*********
-Resources
-*********
+    git clone https://github.com/taufikhdyt01/fastprint_test.git
+    cd fastprint_test
 
--  `User Guide <https://codeigniter.com/docs>`_
--  `Contributing Guide <https://github.com/bcit-ci/CodeIgniter/blob/develop/contributing.md>`_
--  `Language File Translations <https://github.com/bcit-ci/codeigniter3-translations>`_
--  `Community Forums <http://forum.codeigniter.com/>`_
--  `Community Wiki <https://github.com/bcit-ci/CodeIgniter/wiki>`_
--  `Community Slack Channel <https://codeigniterchat.slack.com>`_
+2. Import database:
 
-Report security issues to our `Security Panel <mailto:security@codeigniter.com>`_
-or via our `page on HackerOne <https://hackerone.com/codeigniter>`_, thank you.
+   * Buat database baru dengan nama ``fastprint_db``
+   * Import file SQL yang ada di folder ``database/fastprint_db.sql``
+
+3. Konfigurasi database:
+   
+   Buka file ``application/config/database.php`` dan sesuaikan konfigurasi::
+
+    $db['default'] = array(
+        'hostname' => 'localhost',
+        'username' => 'root',
+        'password' => '',
+        'database' => 'fastprint_db'
+    );
+
+4. Konfigurasi base URL:
+   
+   Buka file ``application/config/config.php`` dan sesuaikan::
+
+    $config['base_url'] = 'http://localhost/fastprint_test/';
+
+******************
+Struktur Database
+******************
+
+1. Tabel ``produk``::
+
+    CREATE TABLE produk (
+        id_produk VARCHAR(100) PRIMARY KEY,
+        nama_produk VARCHAR(255),
+        harga INT,
+        kategori_id INT,
+        status_id INT,
+        FOREIGN KEY (kategori_id) REFERENCES kategori(id_kategori),
+        FOREIGN KEY (status_id) REFERENCES status(id_status)
+    );
+
+2. Tabel ``kategori``::
+
+    CREATE TABLE kategori (
+        id_kategori INT PRIMARY KEY AUTO_INCREMENT,
+        nama_kategori VARCHAR(100)
+    );
+
+3. Tabel ``status``::
+
+    CREATE TABLE status (
+        id_status INT PRIMARY KEY AUTO_INCREMENT,
+        nama_status VARCHAR(100)
+    );
 
 ***************
-Acknowledgement
+Fitur Aplikasi
 ***************
 
-The CodeIgniter team would like to thank EllisLab, all the
-contributors to the CodeIgniter project and you, the CodeIgniter user.
+1. Integrasi API
+---------------
+* Mengambil data dari API FastPrint
+* Autentikasi dinamis menggunakan username dan password yang mengikuti waktu server
+* Menyimpan data produk ke database lokal
+
+2. Manajemen Produk
+------------------
+* **Daftar Produk**: Menampilkan semua produk dengan fitur pencarian dan pengurutan
+* **Filter Status**: Menampilkan produk yang bisa dijual
+* **Tambah Produk**: Form untuk menambah produk baru
+* **Edit Produk**: Mengubah data produk yang sudah ada
+* **Hapus Produk**: Menghapus produk dengan konfirmasi
+
+3. Validasi
+----------
+* Validasi nama produk (wajib diisi)
+* Validasi harga (wajib diisi, harus berupa angka)
+* Validasi kategori dan status (wajib dipilih)
+
+***************
+Cara Penggunaan
+***************
+
+Initial Setup
+------------
+1. Akses URL: ``http://localhost/fastprint_test/products/save_api_data``
+   
+   * Ini akan mengambil data dari API dan menyimpannya ke database lokal
+   * Tunggu hingga proses selesai
+
+Manajemen Produk
+---------------
+1. Melihat Daftar Produk:
+   
+   * Akses: ``http://localhost/fastprint_test/products``
+   * Gunakan fitur search untuk mencari produk
+   * Klik header tabel untuk mengurutkan data
+
+2. Filter Produk Bisa Dijual:
+   
+   * Klik menu "Produk Bisa Dijual"
+   * Atau akses: ``http://localhost/fastprint_test/products/sellable``
+
+3. Tambah Produk:
+   
+   * Klik tombol "Tambah Produk"
+   * Isi form dengan lengkap
+   * Klik "Simpan"
+
+4. Edit Produk:
+   
+   * Klik icon edit (pensil) pada produk yang ingin diubah
+   * Update informasi yang diperlukan
+   * Klik "Update"
+
+5. Hapus Produk:
+   
+   * Klik icon hapus (tempat sampah)
+   * Konfirmasi penghapusan
+
+*************
+Flow Aplikasi
+*************
+
+1. **Initial Data Load**
+   
+   * Aplikasi mengambil data dari API FastPrint
+   * Sistem menggunakan kredensial dinamis berdasarkan waktu server
+   * Data disimpan ke database lokal
+
+2. **Manajemen Data**
+   
+   * Data ditampilkan dalam format tabel yang interaktif
+   * Pengguna dapat melakukan operasi CRUD
+   * Validasi form mencegah input data yang tidak valid
+
+3. **Filter dan Pencarian**
+   
+   * Pencarian real-time menggunakan DataTables
+   * Filter khusus untuk produk yang bisa dijual
+   * Pengurutan data berdasarkan kolom
