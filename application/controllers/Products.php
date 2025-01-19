@@ -7,6 +7,8 @@ class Products extends CI_Controller {
         parent::__construct();
         $this->load->model('product_model');
         $this->load->database();
+        $this->load->library(['form_validation', 'session']);
+        $this->load->helper('url');
     }
 
     private function process_initial_data($data) {
@@ -120,7 +122,102 @@ class Products extends CI_Controller {
         }
     }
 
-    public function index() {
-        echo "Halaman index - akan dibuat untuk menampilkan data";
+     public function index() {
+        // Join dengan tabel kategori dan status untuk mendapatkan nama kategori dan status
+        $this->db->select('produk.*, kategori.nama_kategori, status.nama_status');
+        $this->db->from('produk');
+        $this->db->join('kategori', 'kategori.id_kategori = produk.kategori_id');
+        $this->db->join('status', 'status.id_status = produk.status_id');
+        $data['products'] = $this->db->get()->result();
+
+        $this->load->view('products/index', $data);
+    }
+
+    public function sellable() {
+        // Tampilkan hanya produk yang bisa dijual
+        $this->db->select('produk.*, kategori.nama_kategori, status.nama_status');
+        $this->db->from('produk');
+        $this->db->join('kategori', 'kategori.id_kategori = produk.kategori_id');
+        $this->db->join('status', 'status.id_status = produk.status_id');
+        $this->db->where('status.nama_status', 'bisa dijual');
+        $data['products'] = $this->db->get()->result();
+
+        $this->load->view('products/index', $data);
+    }
+
+    public function add() {
+        $data['categories'] = $this->db->get('kategori')->result();
+        $data['statuses'] = $this->db->get('status')->result();
+        $this->load->view('products/form', $data);
+    }
+
+    public function store() {
+        $this->_validate();
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->add();
+            return;
+        }
+
+        $data = array(
+            'nama_produk' => $this->input->post('nama_produk'),
+            'harga' => $this->input->post('harga'),
+            'kategori_id' => $this->input->post('kategori_id'),
+            'status_id' => $this->input->post('status_id')
+        );
+
+        $this->product_model->insert($data);
+        $this->session->set_flashdata('success', 'Produk berhasil ditambahkan');
+        redirect('products');
+    }
+
+    public function edit($id) {
+        $this->db->select('produk.*, kategori.nama_kategori, status.nama_status');
+        $this->db->from('produk');
+        $this->db->join('kategori', 'kategori.id_kategori = produk.kategori_id');
+        $this->db->join('status', 'status.id_status = produk.status_id');
+        $this->db->where('produk.id_produk', $id);
+        $data['product'] = $this->db->get()->row();
+
+        if (!$data['product']) {
+            show_404();
+        }
+
+        $data['categories'] = $this->db->get('kategori')->result();
+        $data['statuses'] = $this->db->get('status')->result();
+        $this->load->view('products/form', $data);
+    }
+
+    public function update($id) {
+        $this->_validate();
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->edit($id);
+            return;
+        }
+
+        $data = array(
+            'nama_produk' => $this->input->post('nama_produk'),
+            'harga' => $this->input->post('harga'),
+            'kategori_id' => $this->input->post('kategori_id'),
+            'status_id' => $this->input->post('status_id')
+        );
+
+        $this->product_model->update($id, $data);
+        $this->session->set_flashdata('success', 'Produk berhasil diperbarui');
+        redirect('products');
+    }
+
+    public function delete($id) {
+        $this->product_model->delete($id);
+        $this->session->set_flashdata('success', 'Produk berhasil dihapus');
+        redirect('products');
+    }
+
+    private function _validate() {
+        $this->form_validation->set_rules('nama_produk', 'Nama Produk', 'required');
+        $this->form_validation->set_rules('harga', 'Harga', 'required|numeric');
+        $this->form_validation->set_rules('kategori_id', 'Kategori', 'required');
+        $this->form_validation->set_rules('status_id', 'Status', 'required');
     }
 }
