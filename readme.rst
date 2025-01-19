@@ -91,9 +91,10 @@ Fitur Aplikasi
 
 1. Integrasi API
 ---------------
-* Mengambil data dari API FastPrint
-* Autentikasi dinamis menggunakan username dan password yang mengikuti waktu server
-* Menyimpan data produk ke database lokal
+* Mengambil data dari API FastPrint melalui tombol "Sync Data API"
+* Autentikasi dinamis menggunakan username dari server dan password yang mengikuti waktu server
+* Menyimpan data produk ke database lokal dengan penanganan duplikasi
+* Menampilkan status sync data melalui flash message
 
 2. Manajemen Produk
 ------------------
@@ -113,12 +114,16 @@ Fitur Aplikasi
 Cara Penggunaan
 ***************
 
-Initial Setup
+Sync Data API
 ------------
-1. Akses URL: ``http://localhost/fastprint_test/products/save_api_data``
-   
-   * Ini akan mengambil data dari API dan menyimpannya ke database lokal
-   * Tunggu hingga proses selesai
+1. Akses aplikasi di: `http://localhost/fastprint_test`
+2. Klik tombol "Sync Data API" di pojok kanan atas
+3. Sistem akan:
+   * Mengambil username valid dari server
+   * Generate password sesuai format dan waktu
+   * Mengambil data dari API
+   * Menyimpan/mengupdate data ke database lokal
+   * Menampilkan status hasil sync
 
 Manajemen Produk
 ---------------
@@ -154,11 +159,12 @@ Manajemen Produk
 Flow Aplikasi
 *************
 
-1. **Initial Data Load**
-   
-   * Aplikasi mengambil data dari API FastPrint
-   * Sistem menggunakan kredensial dinamis berdasarkan waktu server
-   * Data disimpan ke database lokal
+1. **Sync Data API**
+   * Pengguna dapat melakukan sync data kapan saja melalui UI
+   * Sistem mengambil username valid dari server
+   * Password di-generate secara otomatis sesuai waktu
+   * Data baru akan ditambahkan, data existing akan diupdate
+   * Status sync ditampilkan melalui flash message
 
 2. **Manajemen Data**
    
