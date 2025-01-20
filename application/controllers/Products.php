@@ -3,12 +3,15 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Products extends CI_Controller
 {
-    const API_URL = 'https://recruitment.fastprint.co.id/tes/api_tes_programmer';
-    const PASSWORD_FORMAT = 'bisacoding-%02d-%02d-%s';
+    private $api_url;
+    private $password_format;
     
     public function __construct()
     {
         parent::__construct();
+        $this->load->config('api_credentials');
+        $this->api_url = $this->config->item('api_url');
+        $this->password_format = $this->config->item('api_password_format');
         $this->load->model('product_model');
         $this->load->database();
         $this->load->library(['form_validation', 'session']);
@@ -100,16 +103,13 @@ class Products extends CI_Controller
     {
         $username = $this->get_api_username();
         $password = $this->generate_api_password();
-        
-        log_message('debug', 'API Username: ' . $username);
-        log_message('debug', 'API Password: ' . $password);
 
         return $this->make_api_request($username, $password);
     }
 
     private function get_api_username()
     {
-        $ch = curl_init(self::API_URL);
+        $ch = curl_init($this->api_url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, true);
 
@@ -129,7 +129,7 @@ class Products extends CI_Controller
 {
     $currentDate = new DateTime();
     $password = sprintf(
-        self::PASSWORD_FORMAT,
+        $this->password_format,
         $currentDate->format('d'),
         $currentDate->format('m'),
         $currentDate->format('y')
@@ -142,7 +142,7 @@ class Products extends CI_Controller
 
     private function make_api_request($username, $password)
     {
-        $ch = curl_init(self::API_URL);
+        $ch = curl_init($this->api_url);
         curl_setopt_array($ch, [
             CURLOPT_POST => true,
             CURLOPT_RETURNTRANSFER => true,

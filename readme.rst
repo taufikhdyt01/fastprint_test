@@ -15,6 +15,7 @@ Teknologi Digunakan
 * DataTables
 * Select2
 * Font Awesome
+* PHP Dotenv
 
 ************
 Requirements
@@ -23,24 +24,34 @@ Requirements
 * PHP 7.4 atau lebih tinggi
 * MySQL
 * Web Server (Apache/Nginx)
+* Composer
 
 **********
 Instalasi
 **********
+
 
 1. Clone repository::
 
     git clone https://github.com/taufikhdyt01/fastprint_test.git
     cd fastprint_test
 
-2. Import database:
+2. Install dependencies::
+
+    composer require vlucas/phpdotenv
+
+3. Setup environment:
+
+   * Copy `.env.example` ke `.env`
+   * Sesuaikan konfigurasi database dan API di file `.env`::
+
+        API_URL=https://recruitment.fastprint.co.id/tes/api_tes_programmer
+        API_PASSWORD_FORMAT=bisacoding-%02d-%02d-%s
+
+4. Import database:
 
    * Buat database baru dengan nama ``fastprint_db``
    * Import file SQL yang ada di folder ``database/fastprint_db.sql``
-
-3. Konfigurasi database:
-   
-   Buka file ``application/config/database.php`` dan sesuaikan konfigurasi
 
 ***************
 Fitur Aplikasi
