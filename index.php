@@ -55,6 +55,10 @@
  */
 	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 
+	require "vendor/autoload.php";
+	$dotenv = \Dotenv\Dotenv::createImmutable(__DIR__);
+	$dotenv->load();
+	
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
