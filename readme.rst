@@ -40,50 +40,7 @@ Instalasi
 
 3. Konfigurasi database:
    
-   Buka file ``application/config/database.php`` dan sesuaikan konfigurasi::
-
-    $db['default'] = array(
-        'hostname' => 'localhost',
-        'username' => 'root',
-        'password' => '',
-        'database' => 'fastprint_db'
-    );
-
-4. Konfigurasi base URL:
-   
-   Buka file ``application/config/config.php`` dan sesuaikan::
-
-    $config['base_url'] = 'http://localhost/fastprint_test/';
-
-******************
-Struktur Database
-******************
-
-1. Tabel ``produk``::
-
-    CREATE TABLE produk (
-        id_produk VARCHAR(100) PRIMARY KEY,
-        nama_produk VARCHAR(255),
-        harga INT,
-        kategori_id INT,
-        status_id INT,
-        FOREIGN KEY (kategori_id) REFERENCES kategori(id_kategori),
-        FOREIGN KEY (status_id) REFERENCES status(id_status)
-    );
-
-2. Tabel ``kategori``::
-
-    CREATE TABLE kategori (
-        id_kategori INT PRIMARY KEY AUTO_INCREMENT,
-        nama_kategori VARCHAR(100)
-    );
-
-3. Tabel ``status``::
-
-    CREATE TABLE status (
-        id_status INT PRIMARY KEY AUTO_INCREMENT,
-        nama_status VARCHAR(100)
-    );
+   Buka file ``application/config/database.php`` dan sesuaikan konfigurasi
 
 ***************
 Fitur Aplikasi
@@ -160,6 +117,7 @@ Flow Aplikasi
 *************
 
 1. **Sync Data API**
+
    * Pengguna dapat melakukan sync data kapan saja melalui UI
    * Sistem mengambil username valid dari server
    * Password di-generate secara otomatis sesuai waktu
